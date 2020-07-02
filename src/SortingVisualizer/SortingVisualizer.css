@@ -1,0 +1,10 @@
+.container {
+    text-align: center;
+}
+
+.bar {
+    display: inline-block;
+    background-color: red;
+    width:2px;
+    margin: 0px 1px;
+}
