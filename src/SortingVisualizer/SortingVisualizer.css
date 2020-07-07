@@ -1,10 +1,10 @@
 .container {
-    text-align: center;
+  text-align: center;
 }
 
 .bar {
-    display: inline-block;
-    background-color: red;
-    width:2px;
-    margin: 0px 1px;
+  display: inline-block;
+  background-color: green;
+  width: 2px;
+  margin: 0px 1px;
 }
