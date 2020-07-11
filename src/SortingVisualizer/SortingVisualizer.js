@@ -2,6 +2,11 @@ import React from "react";
 import "./SortingVisualizer.css";
 import { getMergeSortAnimations } from "../SortingAlgorithm/mergeSort";
 import { getBubbleSortAnimations } from "../SortingAlgorithm/bubbleSort";
+import { getQuickSortAnimations } from "../SortingAlgorithm/quickSort";
+import Navbar from "react-bootstrap/Navbar";
+import Nav from "react-bootstrap/Nav";
+import NavDropdown from "react-bootstrap/NavDropdown";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 class SortingVisualizer extends React.Component {
   constructor(props) {
@@ -9,9 +14,9 @@ class SortingVisualizer extends React.Component {
 
     this.state = {
       array: [],
-      //   length: Math.floor(window.innerWidth / 4.2),
+      width: Math.floor(window.innerWidth / 220),
       length: 150,
-      height: Math.floor(window.innerHeight) - 60,
+      height: Math.floor(window.innerHeight) - 70,
     };
   }
 
@@ -21,7 +26,6 @@ class SortingVisualizer extends React.Component {
 
   resetArray() {
     const array = [];
-    console.log(this.state.length);
     for (let i = 0; i < this.state.length; i++) {
       array.push(randomRange(5, this.state.height));
     }
@@ -30,7 +34,6 @@ class SortingVisualizer extends React.Component {
 
   bubbleSort() {
     const animations = getBubbleSortAnimations(this.state.array);
-    console.log(animations);
     for (let i = 0; i < animations.length; i++) {
       setTimeout(() => {
         const arrayBars = document.getElementsByClassName("bar");
@@ -51,9 +54,31 @@ class SortingVisualizer extends React.Component {
     }
   }
 
+  quickSort() {
+    const animations = getQuickSortAnimations(this.state.array);
+    console.log(animations);
+    for (let i = 0; i < animations.length; i++) {
+      setTimeout(() => {
+        const arrayBars = document.getElementsByClassName("bar");
+        const isColorChange = i % 4 === 0 || i % 4 === 1;
+        if (isColorChange) {
+          const [barOneIdx, barTwoIdx] = animations[i];
+          const barOneStyle = arrayBars[barOneIdx].style;
+          const barTwoStyle = arrayBars[barTwoIdx].style;
+          const color = i % 4 === 0 ? "red" : "green";
+          barOneStyle.backgroundColor = color;
+          barTwoStyle.backgroundColor = color;
+        } else {
+          const [barOneIdx, newHeight] = animations[i];
+          const barOneStyle = arrayBars[barOneIdx].style;
+          barOneStyle.height = `${newHeight}px`;
+        }
+      }, i * 100);
+    }
+  }
+
   mergeSort() {
     const animations = getMergeSortAnimations(this.state.array);
-    console.log(animations);
     for (let i = 0; i < animations.length; i++) {
       const arrayBars = document.getElementsByClassName("bar");
       const isColorChange = i % 3 !== 2;
@@ -74,23 +99,40 @@ class SortingVisualizer extends React.Component {
         }, i);
       }
     }
-    console.log("done");
   }
 
   render() {
-    const { array } = this.state;
+    const { array, width } = this.state;
     return (
       <>
-        <div className="container">
+        <Navbar id="navbar" bg="light">
+          <Navbar.Brand>Pathfinding Visualizer</Navbar.Brand>
+          <Navbar.Toggle aria-controls="basic-navbar-nav" />
+          <Navbar.Collapse id="basic-navbar-nav">
+            <Nav className="mr-auto">
+              <Nav.Link id="speedInfo">Speed : Average</Nav.Link>
+              <Nav.Link onClick={() => this.mergeSort()}>MergeSort</Nav.Link>
+              <Nav.Link onClick={() => this.bubbleSort()}>BubbleSort</Nav.Link>
+              <Nav.Link onClick={() => this.quickSort()}>QuickSort</Nav.Link>
+              <Nav.Link onClick={() => this.resetArray()}>HeapSort</Nav.Link>
+              <NavDropdown title="Speed">
+                <NavDropdown.Item>Slow</NavDropdown.Item>
+                <NavDropdown.Item>Average</NavDropdown.Item>
+                <NavDropdown.Item>Fast</NavDropdown.Item>
+              </NavDropdown>
+              <Nav.Link onClick={() => this.resetArray()}>Regenerate</Nav.Link>
+            </Nav>
+          </Navbar.Collapse>
+        </Navbar>
+        <div className="arrayContainer">
           {array.map((value, idx) => (
-            <div key={idx} className="bar" style={{ height: value }}></div>
+            <div
+              key={idx}
+              className="bar"
+              style={{ height: value, width: width }}
+            ></div>
           ))}
         </div>
-        <button onClick={() => this.resetArray()}>Generate Array</button>
-        <button onClick={() => this.mergeSort()}>MergeSort</button>
-        <button onClick={() => this.bubbleSort()}>BubbleSort</button>
-        <button onClick={() => this.resetArray()}>QuickSort</button>
-        <button onClick={() => this.resetArray()}>HeapSort</button>
       </>
     );
   }
