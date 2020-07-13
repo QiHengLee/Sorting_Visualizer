@@ -23,13 +23,18 @@ class SortingVisualizer extends React.Component {
   }
 
   componentDidMount() {
-    this.resetArray();
+    this.resetArray(false);
   }
 
-  resetArray() {
+  resetArray(clearAll) {
     const array = [];
+    const arrayBars = document.getElementsByClassName("bar");
     for (let i = 0; i < this.state.length; i++) {
       array.push(randomRange(5, this.state.height));
+      if (clearAll) {
+        const barStyle = arrayBars[i].style;
+        barStyle.backgroundColor = "lightblue";
+      }
     }
     this.setState({ array });
   }
@@ -39,7 +44,6 @@ class SortingVisualizer extends React.Component {
       setTimeout(
         (bar) => {
           const arrayBars = document.getElementsByClassName("bar");
-          console.log(bar);
           const barStyle = arrayBars[bar].style;
           barStyle.backgroundColor = "lightgreen";
         },
@@ -174,7 +178,6 @@ class SortingVisualizer extends React.Component {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="mr-auto">
-              <Nav.Link id="speedInfo">Speed : Average</Nav.Link>
               <Nav.Link onClick={() => this.mergeSort()}>MergeSort</Nav.Link>
               <Nav.Link onClick={() => this.bubbleSort()}>BubbleSort</Nav.Link>
               <Nav.Link onClick={() => this.quickSort()}>QuickSort</Nav.Link>
@@ -184,9 +187,16 @@ class SortingVisualizer extends React.Component {
                 <NavDropdown.Item>Average</NavDropdown.Item>
                 <NavDropdown.Item>Fast</NavDropdown.Item>
               </NavDropdown>
-              <Nav.Link onClick={() => this.resetArray()}>Regenerate</Nav.Link>
+              <Nav.Link disabled id="speedInfo">
+                Average
+              </Nav.Link>
             </Nav>
           </Navbar.Collapse>
+          <Nav className="mr-auto">
+            <Nav.Link onClick={() => this.resetArray(true)}>
+              Regenerate Array
+            </Nav.Link>
+          </Nav>
         </Navbar>
         <div className="arrayContainer">
           {array.map((value, idx) => (
