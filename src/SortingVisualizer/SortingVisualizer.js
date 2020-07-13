@@ -3,6 +3,7 @@ import "./SortingVisualizer.css";
 import { getMergeSortAnimations } from "../SortingAlgorithm/mergeSort";
 import { getBubbleSortAnimations } from "../SortingAlgorithm/bubbleSort";
 import { getQuickSortAnimations } from "../SortingAlgorithm/quickSort";
+import { getHeapSortAnimations } from "../SortingAlgorithm/heapSort";
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
 import NavDropdown from "react-bootstrap/NavDropdown";
@@ -16,6 +17,7 @@ class SortingVisualizer extends React.Component {
       array: [],
       width: Math.floor(window.innerWidth / 220),
       length: 150,
+      speed: 1,
       height: Math.floor(window.innerHeight) - 70,
     };
   }
@@ -32,9 +34,30 @@ class SortingVisualizer extends React.Component {
     this.setState({ array });
   }
 
+  finishSort() {
+    for (var i = 0; i < this.state.length; i++) {
+      setTimeout(
+        (bar) => {
+          const arrayBars = document.getElementsByClassName("bar");
+          console.log(bar);
+          const barStyle = arrayBars[bar].style;
+          barStyle.backgroundColor = "lightgreen";
+        },
+        i * this.state.speed,
+        i
+      );
+    }
+  }
+
   bubbleSort() {
     const animations = getBubbleSortAnimations(this.state.array);
-    for (let i = 0; i < animations.length; i++) {
+    for (let i = 0; i <= animations.length; i++) {
+      if (i === animations.length) {
+        setTimeout(() => {
+          this.finishSort();
+        }, i * this.state.speed);
+        return;
+      }
       setTimeout(() => {
         const arrayBars = document.getElementsByClassName("bar");
         const isColorChange = i % 4 === 0 || i % 4 === 1;
@@ -42,7 +65,7 @@ class SortingVisualizer extends React.Component {
           const [barOneIdx, barTwoIdx] = animations[i];
           const barOneStyle = arrayBars[barOneIdx].style;
           const barTwoStyle = arrayBars[barTwoIdx].style;
-          const color = i % 4 === 0 ? "red" : "green";
+          const color = i % 4 === 0 ? "red" : "lightblue";
           barOneStyle.backgroundColor = color;
           barTwoStyle.backgroundColor = color;
         } else {
@@ -50,14 +73,20 @@ class SortingVisualizer extends React.Component {
           const barOneStyle = arrayBars[barOneIdx].style;
           barOneStyle.height = `${newHeight}px`;
         }
-      }, i);
+      }, i * this.state.speed);
     }
   }
 
   quickSort() {
     const animations = getQuickSortAnimations(this.state.array);
     console.log(animations);
-    for (let i = 0; i < animations.length; i++) {
+    for (let i = 0; i <= animations.length; i++) {
+      if (i === animations.length) {
+        setTimeout(() => {
+          this.finishSort();
+        }, i * this.state.speed);
+        return;
+      }
       setTimeout(() => {
         const arrayBars = document.getElementsByClassName("bar");
         const isColorChange = i % 4 === 0 || i % 4 === 1;
@@ -65,7 +94,7 @@ class SortingVisualizer extends React.Component {
           const [barOneIdx, barTwoIdx] = animations[i];
           const barOneStyle = arrayBars[barOneIdx].style;
           const barTwoStyle = arrayBars[barTwoIdx].style;
-          const color = i % 4 === 0 ? "red" : "green";
+          const color = i % 4 === 0 ? "red" : "lightblue";
           barOneStyle.backgroundColor = color;
           barTwoStyle.backgroundColor = color;
         } else {
@@ -73,31 +102,66 @@ class SortingVisualizer extends React.Component {
           const barOneStyle = arrayBars[barOneIdx].style;
           barOneStyle.height = `${newHeight}px`;
         }
-      }, i * 100);
+      }, i * this.state.speed);
     }
   }
 
   mergeSort() {
     const animations = getMergeSortAnimations(this.state.array);
-    for (let i = 0; i < animations.length; i++) {
+    for (let i = 0; i <= animations.length; i++) {
+      if (i === animations.length) {
+        setTimeout(() => {
+          this.finishSort();
+        }, i * this.state.speed);
+        return;
+      }
       const arrayBars = document.getElementsByClassName("bar");
       const isColorChange = i % 3 !== 2;
       if (isColorChange) {
         const [barOneIdx, barTwoIdx] = animations[i];
         const barOneStyle = arrayBars[barOneIdx].style;
         const barTwoStyle = arrayBars[barTwoIdx].style;
-        const color = i % 3 === 0 ? "red" : "green";
+        const color = i % 3 === 0 ? "red" : "lightblue";
         setTimeout(() => {
           barOneStyle.backgroundColor = color;
           barTwoStyle.backgroundColor = color;
-        }, i);
+        }, i * this.state.speed);
       } else {
         setTimeout(() => {
           const [barOneIdx, newHeight] = animations[i];
           const barOneStyle = arrayBars[barOneIdx].style;
           barOneStyle.height = `${newHeight}px`;
-        }, i);
+        }, i * this.state.speed);
       }
+    }
+  }
+
+  heapSort() {
+    const animations = getHeapSortAnimations(this.state.array);
+    console.log(animations);
+    for (let i = 0; i <= animations.length; i++) {
+      if (i === animations.length) {
+        setTimeout(() => {
+          this.finishSort();
+        }, i * this.state.speed);
+        return;
+      }
+      setTimeout(() => {
+        const arrayBars = document.getElementsByClassName("bar");
+        const isColorChange = i % 6 === 4 || i % 6 === 5;
+        if (isColorChange) {
+          const [barOneIdx, newHeight] = animations[i];
+          const barOneStyle = arrayBars[barOneIdx].style;
+          barOneStyle.height = `${newHeight}px`;
+        } else {
+          const [barOneIdx, barTwoIdx] = animations[i];
+          const barOneStyle = arrayBars[barOneIdx].style;
+          const barTwoStyle = arrayBars[barTwoIdx].style;
+          const color = i % 6 === 0 || i % 6 === 2 ? "red" : "lightblue";
+          barOneStyle.backgroundColor = color;
+          barTwoStyle.backgroundColor = color;
+        }
+      }, i * this.state.speed);
     }
   }
 
@@ -114,7 +178,7 @@ class SortingVisualizer extends React.Component {
               <Nav.Link onClick={() => this.mergeSort()}>MergeSort</Nav.Link>
               <Nav.Link onClick={() => this.bubbleSort()}>BubbleSort</Nav.Link>
               <Nav.Link onClick={() => this.quickSort()}>QuickSort</Nav.Link>
-              <Nav.Link onClick={() => this.resetArray()}>HeapSort</Nav.Link>
+              <Nav.Link onClick={() => this.heapSort()}>HeapSort</Nav.Link>
               <NavDropdown title="Speed">
                 <NavDropdown.Item>Slow</NavDropdown.Item>
                 <NavDropdown.Item>Average</NavDropdown.Item>
