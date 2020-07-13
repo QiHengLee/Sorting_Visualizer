@@ -47,7 +47,7 @@ class SortingVisualizer extends React.Component {
           const barStyle = arrayBars[bar].style;
           barStyle.backgroundColor = "lightgreen";
         },
-        i * this.state.speed,
+        i * 10,
         i
       );
     }
@@ -174,7 +174,7 @@ class SortingVisualizer extends React.Component {
     return (
       <>
         <Navbar id="navbar" bg="light">
-          <Navbar.Brand>Pathfinding Visualizer</Navbar.Brand>
+          <Navbar.Brand>Sorting Visualizer</Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="mr-auto">
